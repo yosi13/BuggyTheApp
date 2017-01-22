@@ -49,8 +49,20 @@ public class DBclass extends SQLiteOpenHelper {
     public boolean searchpass(String loginUsername, String loginpass)
     {
         db= this.getReadableDatabase();
-        String searchquery="select * from "+DATABASE_TABLE+" where username ='"+loginUsername+"' and password='"+loginpass+"';";
-        Cursor cursor=db.rawQuery(searchquery,null);
+
+        /*Buggy code commented out
+        //Code with the SQL injection problem
+        //String searchquery="select * from "+DATABASE_TABLE+" where username ='"+loginUsername+"' and password='"+loginpass+"';";
+        //Cursor cursor=db.rawQuery(searchquery,null);
+        */
+
+        /*::FIXED CODE::
+         * Using Parameterised SQL queries
+         */
+        String [] params = new String[] {loginUsername, loginpass};
+        Cursor cursor=db.rawQuery("select * from "+DATABASE_TABLE+" where "+ "username=? and password=?",
+                params);
+
         if (cursor.getCount()>0)
         {
             db.close();
